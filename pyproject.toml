@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "video-search-tool"
+version = "0.1.0"
+description = "Configurable video search backend built around NVIDIA NIM models."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "nvidia-riva-client>=2.24.0",
+]
+
+[project.scripts]
+video-search = "video_search_tool.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[dependency-groups]
+dev = [
+  "ipykernel>=6.29.5",
+  "jupyter>=1.1.1",
+  "python-dotenv>=1.0.1",
+]
