@@ -1,10 +1,9 @@
+experiments/notebook/artifacts/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
-
-experiments/
-experiments/videos
 
 # C extensions
 *.so

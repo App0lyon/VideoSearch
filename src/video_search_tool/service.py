@@ -90,7 +90,7 @@ class VideoIndexer:
         visual_chunks = self._build_visual_chunks(video_id, video_path, working_directory)
         all_chunks = audio_chunks + visual_chunks
         embeddings = (
-            self._embedder.embed_texts([chunk.text for chunk in all_chunks], input_type="document")
+            self._embedder.embed_texts([chunk.text for chunk in all_chunks], input_type="passage")
             if all_chunks
             else []
         )

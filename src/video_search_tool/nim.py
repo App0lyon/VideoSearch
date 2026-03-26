@@ -402,7 +402,7 @@ class RivaGrpcTranscriptionClient:
     def _parse_response(self, response: Any) -> list[TranscriptSegment]:
         results = getattr(response, "results", None)
         if not results:
-            raise NvidiaApiError("Riva transcription returned no results.")
+            return []
 
         segments: list[TranscriptSegment] = []
         last_end = 0.0
@@ -435,7 +435,7 @@ class RivaGrpcTranscriptionClient:
             )
 
         if not segments:
-            raise NvidiaApiError("Riva transcription returned results without usable transcripts.")
+            return []
         return segments
 
 

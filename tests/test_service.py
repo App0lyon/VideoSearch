@@ -29,6 +29,11 @@ class FakeTranscriber:
         ]
 
 
+class SilentTranscriber:
+    def transcribe(self, audio_path: Path) -> list[TranscriptSegment]:
+        return []
+
+
 class FakeEmbedder:
     def embed_texts(self, texts: list[str], *, input_type: str = "document") -> list[list[float]]:
         vectors = []
@@ -115,6 +120,26 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(index.summary, "A short demo video with speech and a visible monument.")
         self.assertTrue(any(chunk.modality == "visual" for chunk in index.chunks))
         self.assertTrue(any("Arc de Triomphe" in chunk.text for chunk in index.chunks))
+
+    def test_indexer_handles_video_without_transcript(self) -> None:
+        config = AppConfig()
+        indexer = VideoIndexer(
+            config,
+            FakeExtractor(),
+            SilentTranscriber(),
+            FakeEmbedder(),
+            frame_extractor=FakeFrameExtractor(),
+            frame_captioner=FakeFrameCaptioner(),
+            summary_generator=FakeSummaryGenerator(),
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            video_path = Path(temporary_directory) / "silent.mp4"
+            video_path.write_bytes(b"video")
+
+            index = indexer.index_video(video_path)
+
+        self.assertEqual(index.transcript_segments, [])
+        self.assertTrue(any(chunk.modality == "visual" for chunk in index.chunks))
 
     def test_searcher_prefers_reranked_match(self) -> None:
         config = AppConfig(
